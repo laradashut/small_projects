@@ -1,0 +1,22 @@
+{
+  "name": "server-solo-exercise",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha spec/",
+    "start": "nodemon express-server.js"
+  },
+  "author": "Beth Johnson <curriculum.team@hackreactor.com>",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.0.2",
+    "express": "^4.15.3",
+    "file-system": "^2.2.2",
+    "htmlparser": "^1.7.7",
+    "jsdom": "^11.10.0",
+    "request": "^2.81.0",
+    "shortid": "^2.2.8",
+    "underscore": "^1.8.3"
+  }
+}
