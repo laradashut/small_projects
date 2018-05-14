@@ -14,8 +14,8 @@ app.get('/parse', function(req, res) {
     		res.sendStatus(500);
     	} else {
     		let dom = new JSDOM(body);
-    		let  dom.window.document.getElementsByTagName(tag);
-    		res.json({ tag: dom });
+    		let result = dom.window.document.getElementsByTagName(tag);
+    		res.json({ tag: result });
     	}
     });
 
