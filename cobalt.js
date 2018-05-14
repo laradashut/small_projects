@@ -7,15 +7,15 @@ const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 
 app.get('/parse', function(req, res) {
-	// const { endpoint, tag } = req.params;
+	const { endpoint, tag } = req.params;
     
-    request('http://www.cobalt.io', (error, response, body) => {
+    request(`http://${endpoint}`, (error, response, body) => {
     	if (error) {
-    		console.log('There is an error', error);
+    		res.sendStatus(500);
     	} else {
-    		const dom = new JSDOM(body);
-    		console.log('document', dom.window.document.getElementsByTagName('h1'));
-
+    		let dom = new JSDOM(body);
+    		let  dom.window.document.getElementsByTagName(tag);
+    		res.json({ tag: dom });
     	}
     });
 
@@ -26,15 +26,15 @@ app.get('/contains', function(req, res) {
 
 	request(`http://${endpoint}`, (error, response, body) => {
 		if (error) {
-			console.log('There is an error', error);
+			res.sendStatus(500);
 		} else {
-			const dom = new JSDOM(body);
-			var listOfTags = dom.window.document.getElementsByTagName(`${tag}`);
+			let dom = new JSDOM(body);
+			let listOfTags = dom.window.document.getElementsByTagName(tag);
 			for (let i = 0; i < listOfTags.length; i++) {
-				if (listOfTags[i].innerText === `${text}`) {
-					res.send({exists: true});
+				if (listOfTags[i].innerText === text) {
+					res.json({ exists: true });
 				} else {
-					res.send({exists: false});
+					res.json({ exists: false });
 				}
 			}
 		}
