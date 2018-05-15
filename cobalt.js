@@ -6,41 +6,56 @@ const app = express();
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
 
-app.get('/parse', function(req, res) {
-	const { endpoint, tag } = req.params;
-    
+app.get('/parse', (req, res) => {
+	const { endpoint, tag } = req.query;
+
     request(`http://${endpoint}`, (error, response, body) => {
     	if (error) {
     		res.sendStatus(500);
     	} else {
-    		let dom = new JSDOM(body);
-    		let result = dom.window.document.getElementsByTagName(tag);
-    		res.json({ tag: result });
+    		let dom = new JSDOM(body, {includeNodeLocations: true});
+ 			let arrayOfTags = [];
+    		let allTags =  dom.window.document.querySelectorAll(tag);
+    		for (let i = 0; i < allTags.length; i++) {
+    			let temp = {};
+    			temp.innerText = allTags[i].textContent;
+    			temp.innerHtml = allTags[i].innerHTML;
+    			arrayOfTags.push(temp);
+    		}
+    		let result = {};
+    		result[tag] = arrayOfTags;
+    		res.json(result);
     	}
     });
 
-})
+});
 
-app.get('/contains', function(req, res) {
-	const { endpoint, tag, text } = req.params;
+app.get('/contains', (req, res) => {
+	const { endpoint, tag, text } = req.query;
 
 	request(`http://${endpoint}`, (error, response, body) => {
 		if (error) {
 			res.sendStatus(500);
 		} else {
-			let dom = new JSDOM(body);
-			let listOfTags = dom.window.document.getElementsByTagName(tag);
-			for (let i = 0; i < listOfTags.length; i++) {
-				if (listOfTags[i].innerText === text) {
-					res.json({ exists: true });
+			let dom = new JSDOM(body, {includeNodeLocations: true});
+ 			let arrayOfTags = [];
+    		let allTags =  dom.window.document.querySelectorAll(tag);
+    		for (let i = 0; i < allTags.length; i++) {
+    	    	arrayOfTags.push(allTags[i].textContent);
+    		}
+    		let result = {};
+			for (let i = 0; i < arrayOfTags.length; i++) {
+				if (arrayOfTags[i] === text) {
+					result.exists = true;
 				} else {
-					res.json({ exists: false });
+					result.exists = false;
 				}
 			}
+			res.send(result);
 		}
-	})
+	});
 
-})
+});
 
 app.listen(3000, () => console.log('App is listening on 3000'));
 
